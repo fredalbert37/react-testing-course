@@ -48,8 +48,8 @@ describe('Sign up page tests', () => {
         };
 
         let emailInput, passwordInput, signUpButton;
-        const setupForSubmit = (emailVal = "test@gmail.com", passwordVal = "p4assw0rd") => {
-            const rendered = render(<SignUp></SignUp>);
+        const setupForSubmit = (emailVal = "test@gmail.com", passwordVal = "p4assw0rd", signUpFunction) => {
+            const rendered = render(<SignUp signUp={signUpFunction}></SignUp>);
             const { container } = rendered;
             
             emailInput = container.querySelector('#email');
@@ -112,6 +112,17 @@ describe('Sign up page tests', () => {
             const error = queryByText('La contraseña debe ser entre 6 y 30 caracteres');
 
             expect(error).not.toBeInTheDocument();
+
+        })
+        
+        test("cuando se da click en el boton de signUp y el email y password son validos debe llamar la funcion signup", () => {
+            const signUpFunction = jest.fn().mockResolvedValue({});
+            
+            setupForSubmit("test@gmail.com", "p4assw0rd", signUpFunction);
+
+            fireEvent.click(signUpButton);
+
+            expect(signUpFunction).toHaveBeenCalledTimes(1);
 
         })
 

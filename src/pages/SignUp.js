@@ -8,7 +8,7 @@ const SignUp = ({ signUp = signUpFirebase }) => {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
-  const createAccount = (e) => {
+  const createAccount = async(e) => {
     e.preventDefault();
     setErrors({});
     try {
@@ -18,7 +18,14 @@ const SignUp = ({ signUp = signUpFirebase }) => {
         return;
       }
 
-      signUp(email, password);
+      await signUp(email, password);
+
+      //ocultar el spinner
+
+
+      //redireccionar el usuario a la pagina principal
+
+
 
       //enviar la peticion para registro
     } catch (error) {
