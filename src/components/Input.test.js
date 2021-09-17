@@ -59,6 +59,12 @@ describe('Input component tests', () => {
             const input = container.querySelector('input');
             expect(input.type).toBe("text");
         });
+         
+        test('la propiedad error', () => {
+            const { container } = render(<InputComponent error="Email incorrecto" />);
+            const errorMessage = container.querySelector('.invalid-feedback');
+            expect(errorMessage.textContent).toBe("Email incorrecto");
+        });
 
     })
 

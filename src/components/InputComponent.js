@@ -1,18 +1,22 @@
 import React from "react";
 import PropTypes from "prop-types";
+import classNames from "classnames";
 
 const InputComponent = ({ 
     labelText, 
     type, 
     id, 
     value, 
-    onChange 
+    onChange,
+    error
 }) => {
 
 
   return (
     <div className="mb-3">
-      <label className="form-label" htmlFor={id}>
+      <label className={classNames('form-label', {
+        'text-danger': error
+      })} htmlFor={id}>
         {labelText}
       </label>
       <input
@@ -22,8 +26,11 @@ const InputComponent = ({
         id={id}
         onChange={onChange}
         placeholder={labelText}
-        className="form-control"
+        className={classNames('form-control', {
+          'is-invalid': error
+        })}
       />
+      { error && <div className="invalid-feedback">{error}</div> }
     </div>
   );
 };
@@ -33,7 +40,8 @@ InputComponent.propTypes = {
     type: PropTypes.string,
     id: PropTypes.string,
     value: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    error: PropTypes.string
 }
 
 InputComponent.defaultProps = {

@@ -1,14 +1,30 @@
 import React, { useState } from "react";
 import InputComponent from "../components/InputComponent";
+import { signUpFirebase } from "../firebase/auth/functions";
+import { SignUpValidation } from "../validation/validation";
 
-const SignUp = (props) => {
+const SignUp = ({ signUp = signUpFirebase }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState({});
 
-  const createAccount = (e) =>{
-      e.preventDefault(); 
-      console.log(email, password);
-  }
+  const createAccount = (e) => {
+    e.preventDefault();
+    setErrors({});
+    try {
+      const validation = SignUpValidation(email, password);
+      if (!validation.isValid) {
+        setErrors(validation.errors);
+        return;
+      }
+
+      signUp(email, password);
+
+      //enviar la peticion para registro
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="container pt-5">
@@ -25,6 +41,7 @@ const SignUp = (props) => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  error={errors.email}
                 />
                 <InputComponent
                   id="password"
@@ -32,6 +49,7 @@ const SignUp = (props) => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  error={errors.password}
                 />
                 <div className="mb-3">
                   <button
