@@ -1,15 +1,22 @@
 import React, { useState } from "react";
+import ButtonComponent from "../components/ButtonComponent";
 import InputComponent from "../components/InputComponent";
 import { signUpFirebase } from "../firebase/auth/functions";
 import { SignUpValidation } from "../validation/validation";
+import { useHistory } from "react-router-dom";
 
 const SignUp = ({ signUp = signUpFirebase }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [apiError, setApiError] = useState("");
+  const [SendingRequest, setSendingRequest] = useState(false);
+
+  const history = useHistory();
 
   const createAccount = async(e) => {
     e.preventDefault();
+    setApiError("");
     setErrors({});
     try {
       const validation = SignUpValidation(email, password);
@@ -17,19 +24,17 @@ const SignUp = ({ signUp = signUpFirebase }) => {
         setErrors(validation.errors);
         return;
       }
-
+      
+      setSendingRequest(true);
+      
       await signUp(email, password);
 
-      //ocultar el spinner
-
-
-      //redireccionar el usuario a la pagina principal
-
-
+      history.push('/user');
 
       //enviar la peticion para registro
     } catch (error) {
-      console.log(error);
+      setApiError(error.message);
+      setSendingRequest(false);
     }
   };
 
@@ -59,15 +64,19 @@ const SignUp = ({ signUp = signUpFirebase }) => {
                   error={errors.password}
                 />
                 <div className="mb-3">
-                  <button
-                    id="btn-register"
-                    className="btn btn-primary"
-                    type="submit"
-                  >
-                    Crear Cuenta
-                  </button>
+                  <ButtonComponent id="btn-register"
+                  loading={SendingRequest}
+                  text="Crear cuenta"
+                  type="submit"
+                  />
                 </div>
               </form>
+              {
+                apiError && 
+                <div className="alert alert-danger mt-4" role="alert">
+                  { apiError }
+                </div>
+              }
             </div>
           </div>
         </div>
